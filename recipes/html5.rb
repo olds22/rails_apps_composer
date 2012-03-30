@@ -19,7 +19,11 @@ case config['css_option']
     gem 'bootstrap-sass', '>= 2.0.1'
     recipes << 'bootstrap'
 
-end
+  when 'bootstrap_static'
+    gem 'twitter-bootstrap-rails', git: 'git://github.com/seyhunak/twitter-bootstrap-rails.git', branch: 'static'
+    recipes << 'bootstrap'
+  end
+
 after_bundler do
   say_wizard "HTML5 recipe running 'after bundler'"
   # add a humans.txt file
@@ -98,6 +102,16 @@ body { padding-top: 60px; }
 @import "bootstrap-responsive";
 RUBY
 
+    when 'bootstrap_static'
+      say_wizard 'installing Twitter Bootstrap HTML5 framework (static)'
+      insert_into_file 'app/assets/stylesheets/application.css.scss', "*= require bootstrap.min\n", :after => "require_self\n"
+      insert_into_file 'app/assets/stylesheets/application.css.scss', "body { padding-top: 60px; }", :after => "*/\n"
+      insert_into_file 'app/assets/javascripts/application.js', "//= require bootstrap\n", :after => "jquery_ujs\n"
+      # Example of how to use bootstrap w/ coffeescript
+      create_file 'app/assets/javascripts/bootstrap_example.js.coffee', <<-RUBY
+jQuery -> $("a[rel=popover]").popover() $(".tooltip").tooltip() $("a[rel=tooltip]").tooltip()
+RUBY
+
     when 'foundation'
       say_wizard 'installing Zurb Foundation HTML5 framework'
       insert_into_file 'app/assets/javascripts/application.js', "//= require foundation\n", :after => "jquery_ujs\n"
@@ -135,4 +149,4 @@ config:
   - css_option:
       type: multiple_choice
       prompt: "Which front-end framework would you like for HTML5 and CSS?"
-      choices: [["None", nothing], ["Zurb Foundation", foundation], ["Twitter Bootstrap (less)", bootstrap_less], ["Twitter Bootstrap (sass)", bootstrap_sass], ["Skeleton", skeleton], ["Just normalize CSS for consistent styling", normalize]]
+      choices: [["None", nothing], ["Zurb Foundation", foundation], ["Twitter Bootstrap (less)", bootstrap_less], ["Twitter Bootstrap (sass)", bootstrap_sass], ["Twitter Bootstrap (static)", bootstrap_static], ["Skeleton", skeleton], ["Just normalize CSS for consistent styling", normalize]]

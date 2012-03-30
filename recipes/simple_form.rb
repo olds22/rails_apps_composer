@@ -5,11 +5,11 @@ case config['form_option']
   when 'no'
     say_wizard "Form help recipe skipped."
   when 'simple_form'
-    gem 'simple_form'
+    gem 'simple_form', '>= 2.0'
     # for external test
     recipes << 'simple_form'
   when 'simple_form_bootstrap'
-    gem 'simple_form'
+    gem 'simple_form', '>= 2.0'
     # for external test
     recipes << 'simple_form'
     recipes << 'simple_form_bootstrap'

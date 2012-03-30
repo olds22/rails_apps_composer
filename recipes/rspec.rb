@@ -2,7 +2,7 @@
 # https://github.com/RailsApps/rails_apps_composer/blob/master/recipes/rspec.rb
 
 if config['rspec']
-  gem 'rspec-rails', '>= 2.9.0.rc2', :group => [:development, :test]
+  gem 'rspec-rails', '>= 2.9.0', :group => [:development, :test]
   if recipes.include? 'mongoid'
     # use the database_cleaner gem to reset the test database
     gem 'database_cleaner', '>= 0.7.1', :group => :test
@@ -13,7 +13,7 @@ if config['rspec']
     gem 'machinist', :group => :test
   end
   if config['factory_girl']
-    gem 'factory_girl_rails', '>= 2.0.0.rc', :group => [:development, :test]
+    gem 'factory_girl_rails', '>= 3.0', :group => [:development, :test]
   end
   # add a collection of RSpec matchers and Cucumber steps to make testing email easy
   gem 'email_spec', '>= 1.2.1', :group => :test
@@ -49,13 +49,16 @@ RUBY
     inject_into_file 'config/application.rb', :after => "Rails::Application\n" do <<-RUBY
 
     # don't generate RSpec tests for views and helpers
+    # don't generate helpers and assets by default
     config.generators do |g|
       g.view_specs false
       g.helper_specs false
-      #{"g.fixture_replacement :machinist" if config['machinist']}
+      g.helper false
+      g.assets false
     end
 
 RUBY
+#{"g.fixture_replacement :machinist" if config['machinist']}
     end
 
 

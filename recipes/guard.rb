@@ -1,3 +1,5 @@
+say_wizard 'Running Guard'
+
 case config['guard']
   when 'no'
     recipes.delete('guard')
@@ -14,30 +16,6 @@ end
 
 if recipes.include? 'guard'
   gem 'guard', '>= 0.6.2', :group => :development
-
-  prepend_file 'Gemfile' do <<-RUBY
-require 'rbconfig'
-HOST_OS = RbConfig::CONFIG['host_os']
-
-RUBY
-  end
-
-  append_file 'Gemfile' do <<-RUBY
-  # need newline here!
-case HOST_OS
-  when /darwin/i
-    gem 'rb-fsevent', :group => :development
-    gem 'growl', :group => :development
-  when /linux/i
-    gem 'libnotify', :group => :development
-    gem 'rb-inotify', :group => :development
-  when /mswin|windows/i
-    gem 'rb-fchange', :group => :development
-    gem 'win32console', :group => :development
-    gem 'rb-notifu', :group => :development
-end
-  RUBY
-  end
 
   def guards
     @guards ||= []
@@ -56,19 +34,23 @@ end
   guard 'bundler', '>= 0.1.3'
 
   unless recipes.include? 'pow'
-    guard 'rails', '>= 0.0.3'
+    guard 'rails', '>= 0.1.0'
   end
-  
+
   if recipes.include? 'guard-LiveReload'
-    guard 'livereload', '>= 0.3.0'
+    guard 'livereload', '>= 0.4.2'
+  end
+
+  if recipes.include? 'spork'
+    guard 'spork', '>= 0.5.2'
   end
 
   if recipes.include? 'rspec'
-    guard 'rspec', '>= 0.4.3'
+    guard 'rspec', '>= 0.7.0'
   end
 
   if recipes.include? 'cucumber'
-    guard 'cucumber', '>= 0.6.1'
+    guard 'cucumber', '>= 0.7.5'
   end
 
   after_bundler do
